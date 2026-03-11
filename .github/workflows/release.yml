@@ -33,18 +33,32 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Install FFmpeg (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -OutFile ffmpeg.zip
+          Expand-Archive ffmpeg.zip -DestinationPath ffmpeg_temp
+          Get-ChildItem -Path ffmpeg_temp -Filter ffmpeg.exe -Recurse | Copy-Item -Destination .
+          Get-ChildItem -Path ffmpeg_temp -Filter ffprobe.exe -Recurse | Copy-Item -Destination .
+          Remove-Item -Recurse -Force ffmpeg_temp, ffmpeg.zip
+
       - name: Build with PyInstaller (Using Spec File)
-        # Menggunakan build.spec agar aset CustomTkinter terbawa
         run: uv run pyinstaller build.spec --clean
 
       - name: Rename artifact for identification
         shell: bash
         run: |
-          mv dist/${{ matrix.artifact_name }} dist/${{ matrix.asset_name }}
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            mv dist/Modern-YT-Downloader.exe dist/${{ matrix.asset_name }}
+          else
+            mv dist/Modern-YT-Downloader dist/${{ matrix.asset_name }}
+          fi
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: dist/${{ matrix.asset_name }}
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

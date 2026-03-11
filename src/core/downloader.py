@@ -1,8 +1,15 @@
 import os
+import sys
 import threading
 from pathlib import Path
 from datetime import timedelta
 import yt_dlp
+
+def get_ffmpeg_path():
+    if getattr(sys, 'frozen', False):
+        # Specific for PyInstaller
+        return sys._MEIPASS
+    return None
 
 class Downloader:
     def __init__(self, progress_callback=None, status_callback=None, log_callback=None):
@@ -41,6 +48,7 @@ class Downloader:
                     self.status_callback("Converting / Post-processing...")
 
         outtmpl = os.path.join(outdir, '%(title)s [%(id)s].%(ext)s')
+        ffmpeg_path = get_ffmpeg_path()
         common_opts = {
             'outtmpl': outtmpl,
             'progress_hooks': [hook],
@@ -51,6 +59,9 @@ class Downloader:
             'quiet': True,
             'no_warnings': True,
         }
+
+        if ffmpeg_path:
+            common_opts['ffmpeg_location'] = ffmpeg_path
 
         if cookies_file:
             common_opts['cookiefile'] = cookies_file

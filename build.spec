@@ -6,10 +6,16 @@ ctk_path = os.path.dirname(customtkinter.__file__)
 
 block_cipher = None
 
+binaries_to_add = []
+if os.path.exists('ffmpeg.exe'):
+    binaries_to_add.append(('ffmpeg.exe', '.'))
+if os.path.exists('ffprobe.exe'):
+    binaries_to_add.append(('ffprobe.exe', '.'))
+
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
+    binaries=binaries_to_add,
     datas=[
         (ctk_path, 'customtkinter/'),
     ],
