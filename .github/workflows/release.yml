@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
@@ -17,10 +17,8 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            artifact_name: Modern-YT-Downloader
             asset_name: Modern-YT-Downloader-Linux
           - os: windows-latest
-            artifact_name: Modern-YT-Downloader.exe
             asset_name: Modern-YT-Downloader-Setup.exe
 
     steps:
@@ -50,43 +48,29 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          choco install innosetup --no-progress -y
+          # Inno Setup is pre-installed on windows-latest runners
           $tag = "${{ github.ref_name }}"
           $version = $tag.TrimStart("v")
           ISCC /DAppVersion="$version" installer.iss
 
-      - name: Rename artifact for identification
+      - name: Prepare Assets for Upload
         shell: bash
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            mv dist/Modern-YT-Downloader-Setup.exe dist/${{ matrix.asset_name }}
+            # Rename the raw PyInstaller executable to a 'Portable' version
+            mv dist/Modern-YT-Downloader.exe dist/Modern-YT-Downloader-Portable.exe
+            # The installer is already named Modern-YT-Downloader-Setup.exe (matches asset_name)
           else
+            # Linux: Rename the binary to the desired asset name
             mv dist/Modern-YT-Downloader dist/${{ matrix.asset_name }}
           fi
-
-      - name: Build Windows Installer with Inno Setup
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: |
-          # Rename back so the .iss script can find it
-          Move-Item dist\${{ matrix.asset_name }} dist\Modern-YT-Downloader.exe
-          # Compile installer (Inno Setup is pre-installed on windows-latest runners)
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
-          # Rename portable exe back for upload
-          Move-Item dist\Modern-YT-Downloader.exe dist\${{ matrix.asset_name }}
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/${{ matrix.asset_name }}
+          files: |
+            dist/${{ matrix.asset_name }}
+            dist/Modern-YT-Downloader-Portable.exe
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Windows Installer
-        if: matrix.os == 'windows-latest'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/Modern-YT-Downloader-Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
