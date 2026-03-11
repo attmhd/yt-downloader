@@ -1,32 +1,34 @@
-; Inno Setup script for Modern YT Downloader
-; Builds a proper Windows installer registered in Add/Remove Programs
+; Inno Setup Script for Modern YT Downloader
+; https://jrsoftware.org/isinfo.php
+
+#ifndef AppVersion
+  #define AppVersion "1.0.0"
+#endif
 
 #define AppName "Modern YT Downloader"
-#define AppVersion "1.0.3"
-#define AppPublisher "Natta Std"
+#define AppPublisher "attmhd"
 #define AppURL "https://github.com/attmhd/yt-downloader"
 #define AppExeName "Modern-YT-Downloader.exe"
 
 [Setup]
-AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+AppId={{A3B4C5D6-E7F8-4A1B-9C2D-3E4F5A6B7C8D}
 AppName={#AppName}
 AppVersion={#AppVersion}
-AppVerName={#AppName} {#AppVersion}
 AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
-AppSupportURL={#AppURL}/issues
-AppUpdatesURL={#AppURL}/releases
+AppSupportURL={#AppURL}
+AppUpdatesURL={#AppURL}
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
-DisableProgramGroupPage=yes
+AllowNoIcons=yes
 OutputDir=dist
 OutputBaseFilename=Modern-YT-Downloader-Setup
-Compression=lzma2/ultra64
+Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-PrivilegesRequired=admin
-UninstallDisplayIcon={app}\{#AppExeName}
-UninstallDisplayName={#AppName}
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
+ArchitecturesInstallIn64BitMode=x64
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -36,6 +38,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "dist\{#AppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "ffprobe.exe"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
@@ -43,4 +47,4 @@ Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

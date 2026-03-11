@@ -21,7 +21,7 @@ jobs:
             asset_name: Modern-YT-Downloader-Linux
           - os: windows-latest
             artifact_name: Modern-YT-Downloader.exe
-            asset_name: Modern-YT-Downloader-Win.exe
+            asset_name: Modern-YT-Downloader-Setup.exe
 
     steps:
       - name: Checkout code
@@ -46,11 +46,20 @@ jobs:
       - name: Build with PyInstaller (Using Spec File)
         run: uv run pyinstaller build.spec --clean
 
+      - name: Build Windows installer with Inno Setup
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart("v")
+          ISCC /DAppVersion="$version" installer.iss
+
       - name: Rename artifact for identification
         shell: bash
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            mv dist/Modern-YT-Downloader.exe dist/${{ matrix.asset_name }}
+            mv dist/Modern-YT-Downloader-Setup.exe dist/${{ matrix.asset_name }}
           else
             mv dist/Modern-YT-Downloader dist/${{ matrix.asset_name }}
           fi
