@@ -1,78 +1,69 @@
-# YT-DLP GUI Downloader
+# 🚀 Pro Downloader (Universal Media GUI)
 
-A simple graphical user interface (GUI) for [yt-dlp](https://github.com/yt-dlp/yt-dlp) built with Tkinter for Linux (Debian, Ubuntu, and derivatives).
-Download YouTube videos or audio easily, with progress bar, log panel, and output folder selection.
+A premium, modern graphical user interface for [yt-dlp](https://github.com/yt-dlp/yt-dlp) built with **CustomTkinter**. This tool provides a clean and intuitive experience for downloading media from hundreds of sites including **YouTube, Instagram, TikTok, Facebook, and Twitter**.
 
-## Features
+## ✨ Features
 
-- Download YouTube videos (MP4, best quality) or audio (MP3)
-- Choose output folder
-- Progress bar with speed and ETA
-- Log panel for download status and errors
-- Option to open output folder after download
-- Cancel ongoing downloads
+- **Modern & Clean UI**: Minimalist design with **Light/Dark mode** support.
+- **Universal Support**: One tool for YouTube, Instagram Reels, TikTok (no watermark), and more.
+- **Fast Performance**: Powered by `yt-dlp` for high-speed, reliable downloads.
+- **Progress Tracking**: Real-time status updates, progress bar, and logs.
+- **Premium Aesthetics**: Using **Inter** font for a professional look and feel.
+- **Cross-Platform**: Optimized for Linux and Windows distribution.
 
-## Requirements
+## 🛠️ Project Structure
 
-### Linux (Debian, Ubuntu, and derivatives)
-
-Install dependencies via apt:
-
-```sh
-sudo apt update
-sudo apt install python3 python3-tk ffmpeg
-pip install -U yt-dlp
+```text
+yt-downloader/
+├── src/
+│   ├── core/          # Business logic (yt-dlp downloader)
+│   └── ui/            # Modern UI components (CustomTkinter)
+├── main.py            # Entry point for the application
+├── pyproject.toml     # Dependency management (uv)
+└── build.spec         # PyInstaller configuration
 ```
 
-- `python3-tk` is required for the Tkinter GUI.
-- `ffmpeg` is required for audio/video conversion.
-- `yt-dlp` can be installed via pip for the latest version.
+## 🚀 Getting Started
 
-### Linux (Arch, Manjaro, EndeavourOS, and derivatives)
+### Prerequisites
 
-Install dependencies via pacman:
+- **Python 3.11+**
+- **FFmpeg**: Required for high-quality video merging and audio conversion.
+  - **Linux**: `sudo apt install ffmpeg` or `sudo pacman -S ffmpeg`
+  - **Windows**: [Download FFmpeg](https://ffmpeg.org/download.html)
 
-```sh
-sudo pacman -S python tk ffmpeg yt-dlp
+### Installation (using uv)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/attmhd/yt-downloader.git
+   cd yt-downloader
+   ```
+
+2. **Run the application:**
+   ```bash
+   uv run main.py
+   ```
+
+## 📦 Building for Distribution
+
+To create a standalone executable:
+
+```bash
+# Ensure build script is executable
+chmod +x build.sh
+
+# Run the build
+./build.sh
 ```
 
-Or, if you prefer to install yt-dlp via pip for the latest version:
+The output will be in the `dist/` directory.
 
-```sh
-sudo pacman -S python tk ffmpeg
-pip install -U yt-dlp
-```
+## 🧡 Support the Creator
 
-## Usage
+If you find this tool useful, consider supporting the development through Saweria:
+👉 **[saweria.co/attmhd](https://saweria.co/attmhd)**
 
-1. Clone this repository:
+## 📜 License
 
-    ```sh
-    git clone https://github.com/attmhd/yt-downloader.git
-    cd yt-downloader
-    ```
-
-2. Run the application:
-
-    ```sh
-    python app.py
-    ```
-
-3. Paste the YouTube video or playlist URL.
-4. Choose the output folder.
-5. Select format: **Video (MP4)** or **Audio (MP3)**.
-6. Click **Download**.
-7. Monitor progress, speed, and ETA.
-8. Optionally, open the output folder automatically when done.
-
-## Notes
-
-- This app is designed for Linux (Debian/Ubuntu and derivatives).
-- The app uses `xdg-open` to open the output folder after download.
-- All downloads are saved with the format:
-  `<title> [<id>].<ext>` in the chosen output folder.
-- If dependencies are missing, you will see an error message.
-
-## License
-
-MIT
+MIT © 2025 attmhd
