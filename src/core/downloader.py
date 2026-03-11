@@ -78,9 +78,16 @@ class Downloader:
         else:
             ydl_opts = {
                 **common_opts,
-                'format': 'bv*+ba/b',
+                # Prefer H.264 (AVC) + AAC in MP4 for widest player compatibility,
+                # including Windows Media Player. Falls back to best available streams
+                # which FFmpeg will merge into MP4.
+                'format': (
+                    'bestvideo[vcodec^=avc][ext=mp4]+bestaudio[acodec^=mp4a][ext=m4a]'
+                    '/bestvideo[ext=mp4]+bestaudio[ext=m4a]'
+                    '/bestvideo+bestaudio/best'
+                ),
                 'postprocessors': [
-                    {'key': 'FFmpegVideoConvertor', 'preferedformat': 'mp4'},
+                    {'key': 'FFmpegVideoRemuxer', 'preferedformat': 'mp4'},
                     {'key': 'FFmpegMetadata'},
                 ],
             }
