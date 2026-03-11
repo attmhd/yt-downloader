@@ -64,10 +64,29 @@ jobs:
             mv dist/Modern-YT-Downloader dist/${{ matrix.asset_name }}
           fi
 
+      - name: Build Windows Installer with Inno Setup
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          # Rename back so the .iss script can find it
+          Move-Item dist\${{ matrix.asset_name }} dist\Modern-YT-Downloader.exe
+          # Compile installer (Inno Setup is pre-installed on windows-latest runners)
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+          # Rename portable exe back for upload
+          Move-Item dist\Modern-YT-Downloader.exe dist\${{ matrix.asset_name }}
+
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: dist/${{ matrix.asset_name }}
           generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows Installer
+        if: matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/Modern-YT-Downloader-Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
